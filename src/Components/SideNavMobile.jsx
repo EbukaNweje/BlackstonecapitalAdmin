@@ -8,8 +8,8 @@ import {
     FaDownload,
     FaHome,
     FaInfoCircle,
-    FaUser,
-    FaUserCheck,
+    // FaUser,
+    // FaUserCheck,
     FaUserCircle,
 } from "react-icons/fa";
 import { NavLink} from "react-router-dom";
