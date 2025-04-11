@@ -40,10 +40,20 @@ const UserDetails = () => {
 
     const [showActions, setShowActions] = useState(false);
     const [blockUser, setBlockUser] = useState(false);
-    const handleBlockUser = () => {
-        setBlockUser(false);
-        console.log("Blocking user");
-        setShowActions(false);
+    const handleBlockUser = async () => {
+        try {
+            const toastLoadingId = toast.loading("Please wait...");
+            const response = await axios.put(`https://blackstonecapital-bank-end.vercel.app/api/user/${id}/status-toggle`);
+            setTimeout(() => {
+                toast.dismiss(toastLoadingId);
+                toast.success(response.data.message);
+                setBlockUser(false)
+                window.location.reload()
+            }, 3000);
+            // Optionally update user status in your local state
+          } catch (error) {
+            toast.error(error.response?.data?.message || 'Error toggling user status');
+          }
     };
 
     const handleOnRoi = () => {
@@ -336,14 +346,14 @@ const UserDetails = () => {
                                                 Login Activity
                                             </div>
                                         </NavLink>
-                                        {/* <div
+                                        <div
                                             className="w-full h-7 flex items-center pl-1 text-sm hover:bg-gray-300 cursor-pointer"
                                             onClick={() =>
                                                 setBlockUser(!blockUser)
                                             }
                                         >
-                                            Block
-                                        </div> */}
+                                            {oneUserData?.status ? 'Unsuspend User' : 'Suspend User'} {oneUserData?.status ? '🟢' : '🔴'}
+                                        </div>
                                         {/* <div
                                             className="w-full h-7 flex items-center pl-1 text-sm hover:bg-gray-300 cursor-pointer"
                                             onClick={handleOnRoi}
@@ -559,7 +569,7 @@ const UserDetails = () => {
                 title={"Block User"}
             >
                 <p className="text-2xl">
-                    Are you sure you want to block {oneUserData.fullName}?
+                    Are you sure you want to {oneUserData?.status ? 'Unsuspend User' : 'Suspend User'} {oneUserData.userName}?
                 </p>
             </Modal>
             <Modal
